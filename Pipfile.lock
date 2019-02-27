@@ -158,11 +158,7 @@
             "version": "==2.8"
         },
         "iexfinance": {
-            "hashes": [
-                "sha256:e81696eb09440b13f13a86cc9a8c51b2cc7a23b14a940d15933b5e09750a0caf",
-                "sha256:ed91710b8fe5e2dccd00b0c766e094838c1094c53b53b5ff230c78a771c2a278"
-            ],
-            "version": "==0.4.0"
+            "version": "==0.3.5"
         },
         "intervaltree": {
             "hashes": [
@@ -408,12 +404,8 @@
             "version": "==0.7.5"
         },
         "pipeline-live": {
-            "hashes": [
-                "sha256:3c4d75798e8e3e7dc2b94a9b9bd881ffbcd9d7e42dc4520e62c71a08590f5700",
-                "sha256:6c2798c40cd379c4854a3f57a1af9599e3eb6f4cf4723caec8449d76c7bf98fe"
-            ],
             "index": "pypi",
-            "version": "==0.1.4"
+            "version": "==0.1.5"
         },
         "prompt-toolkit": {
             "hashes": [
