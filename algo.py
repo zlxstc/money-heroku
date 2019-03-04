@@ -222,6 +222,8 @@ def my_rebalance(context, data):
             StockShares = context.portfolio.positions[stock].amount
             CurrPrice = float(data.current([stock], 'price'))
             CostBasis = float(context.portfolio.positions[stock].cost_basis)
+            if np.isnan(CurrPrice):
+                pass
             SellPrice = float(
                 make_div_by_05(
                     CurrPrice *
