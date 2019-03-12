@@ -220,7 +220,7 @@ def my_rebalance(context, data):
     for stock in context.portfolio.positions:
         if np.isnan(float(data.current([stock], 'price'))):
             pass  # probably best to wait until nan goes away
-        if not get_open_orders(stock):
+        elif not get_open_orders(stock):
             StockShares = context.portfolio.positions[stock].amount
             CurrPrice = float(data.current([stock], 'price'))
             CostBasis = float(context.portfolio.positions[stock].cost_basis)
