@@ -224,9 +224,10 @@ def my_rebalance(context, data):
             StockShares = context.portfolio.positions[stock].amount
             CurrPrice = float(data.current([stock], 'price'))
             CostBasis = float(context.portfolio.positions[stock].cost_basis)
+            HigherPrice = CurrPrice if CurrPrice > CostBasis else CostBasis
             SellPrice = float(
                 make_div_by_05(
-                    CurrPrice *
+                    HigherPrice *
                     SellFactor,
                     buy=False))
 
