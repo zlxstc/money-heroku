@@ -273,7 +273,7 @@ def my_rebalance(context, data):
         elif CurrPrice < 0.89 * PH_3_Avg:
             pass  # stock is dipping, don't buy
         else:
-            if (CurrPrice > float(1.15 * PH_Avg)
+            if (CurrPrice > float(1.2 * PH_Avg)
                and CurrPrice < float(1.3 * PH_Avg)):
                 BuyPrice = float(CurrPrice)
             else:
