@@ -280,7 +280,7 @@ def my_rebalance(context, data):
                 BuyPrice = float(CurrPrice * BuyFactor)
             BuyPrice = float(make_div_by_05(BuyPrice, buy=True))
             StockShares = int(WeightThisBuyOrder * cash / BuyPrice)
-            #order(stock, StockShares,style=LimitOrder(BuyPrice))
+            order(stock, StockShares,style=LimitOrder(BuyPrice))
 
 # if cents not divisible by .05, round down if buy, round up if sell
 
