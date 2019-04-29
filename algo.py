@@ -65,7 +65,7 @@ def initialize(context):
             date_rules.every_day(),
             time_rules.market_open(
                 minutes=minutez))
-    for minutez in xrange(
+    for minutez in range(
         1,
         10,
         1
