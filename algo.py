@@ -65,7 +65,16 @@ def initialize(context):
             date_rules.every_day(),
             time_rules.market_open(
                 minutes=minutez))
-
+    for minutez in xrange(
+        1,
+        10,
+        1
+    ):
+        schedule_function(
+            my_rebalance_min1,
+            date_rules.every_day(),
+            time_rules.market_open(
+                minutes=minutez))
     # Prevent excessive logging of canceled orders at market close.
     schedule_function(
         cancel_open_orders,
@@ -273,15 +282,103 @@ def my_rebalance(context, data):
         elif CurrPrice < 0.89 * PH_3_Avg:
             pass  # stock is dipping, don't buy
         else:
-            if (CurrPrice > float(1.2 * PH_Avg)
-               and CurrPrice < float(1.3 * PH_Avg)):
+            if (CurrPrice > float(1.15 * PH_Avg)
+               and CurrPrice < float(1.35 * PH_Avg)):
                 BuyPrice = float(CurrPrice)
             else:
                 BuyPrice = float(CurrPrice * BuyFactor)
             BuyPrice = float(make_div_by_05(BuyPrice, buy=True))
             StockShares = int(WeightThisBuyOrder * cash / BuyPrice)
-            #order(stock, StockShares,style=LimitOrder(BuyPrice))
-
+            order(stock, StockShares,style=LimitOrder(BuyPrice))
+    # rebalance for min1
+def my_rebalance_min1(context, data):
+    BuyFactor = .979
+    SellFactor = 1.027
+    cash = context.portfolio.cash
+ 
+    cancel_open_orders(context, data)
+ 
+    # Order sell at profit target in hope that somebody actually buys it
+    for stock in context.portfolio.positions:
+        if np.isnan(float(data.current([stock], 'price'))):
+            pass  # probably best to wait until nan goes away
+        if not get_open_orders(stock):
+            StockShares = context.portfolio.positions[stock].amount
+            CurrPrice = float(data.current([stock], 'price'))
+            CostBasis = float(context.portfolio.positions[stock].cost_basis)
+            MeanVolume = float(data.history(stock, 'volume', 300, '1m').mean())
+            CurrVolume = float(data.history(stock, 'volume', 10, '1m').mean())
+            if (1 > 0):
+                SellPrice = float(
+                make_div_by_05(
+                    CurrPrice *
+                    SellFactor,
+                    buy=False))
+            else: 
+                SellPrice = float(
+                make_div_by_05(
+                    CostBasis *
+                    SellFactor,
+                    buy=False))
+            if np.isnan(SellPrice):
+                pass  # probably best to wait until nan goes away
+            elif stock not in context.age:
+                context.age[stock] = 1
+            elif (stock in context.age and context.age[stock] == 0):
+                context.age[stock] = 1
+            elif (stock in context.age and context.age[stock] == 1):
+                pass
+            elif (CurrPrice < 0.9 * CostBasis):
+                SellPrice = float(
+                        make_div_by_05(.99 * CurrPrice, buy=False))
+                order(stock, -StockShares,style=LimitOrder(SellPrice))
+            elif (
+                context.MyFireSaleAge <= context.age[stock]
+                and (
+                    context.MyFireSalePrice > CurrPrice
+                    or CostBasis > CurrPrice
+                )
+            ):
+                SellPrice = float(
+                    make_div_by_05(.99 * CurrPrice, buy=False))
+                order(stock, -StockShares,
+                      style=LimitOrder(SellPrice)
+                      )
+            
+            else:
+                order(stock, -StockShares,
+                      style=LimitOrder(SellPrice)
+                      )
+ 
+    WeightThisBuyOrder = float(1.00 / context.MaxBuyOrdersAtOnce)
+    for ThisBuyOrder in range(context.MaxBuyOrdersAtOnce):
+        stock = next(context.MyCandidate)
+        PH = data.history([stock], 'price', 20, '1d')
+        PH_3 = data.history([stock], 'price', 3, '1d')
+        PH_Avg = float(PH.mean())
+        PH_3_Avg = float(PH_3.mean())
+        Highest_Price = data.history([stock], 'high', 3, '1d')
+        HP = float(Highest_Price.max())
+        Lowest_Price = data.history([stock], 'low', 3, '1d')
+        LP = float(Lowest_Price.min())
+        CurrPrice = float(data.current([stock], 'price'))
+        if np.isnan(CurrPrice):
+            pass  # probably best to wait until nan goes away
+        elif CurrPrice < 0.89 * PH_3_Avg:
+            pass  # stock is dipping, don't buy
+        
+        else:
+            if (CurrPrice > float(1.15 * PH_Avg)
+               and CurrPrice < float(1.35 * PH_Avg)):
+                BuyPrice = float(CurrPrice*1.01)
+            else:
+                BuyPrice = float(CurrPrice * BuyFactor)
+            BuyPrice = float(make_div_by_05(BuyPrice, buy=True))
+            StockShares = int(WeightThisBuyOrder * cash / BuyPrice)
+            order(stock, StockShares,
+                  style=LimitOrder(BuyPrice)
+                  )
+ 
 # if cents not divisible by .05, round down if buy, round up if sell
 
 
