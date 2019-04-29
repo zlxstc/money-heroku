@@ -363,7 +363,6 @@ def my_rebalance_min1(context, data):
             BuyPrice = float(make_div_by_05(BuyPrice, buy=True))
             StockShares = int(WeightThisBuyOrder * cash / BuyPrice)
             order(stock, StockShares,style=LimitOrder(BuyPrice))
- 
 # if cents not divisible by .05, round down if buy, round up if sell
 
 
