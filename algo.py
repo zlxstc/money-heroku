@@ -65,7 +65,7 @@ def initialize(context):
             date_rules.every_day(),
             time_rules.market_open(
                 minutes=minutez))
-    for minutez in range(
+    for minutezz in range(
         1,
         10,
         1
@@ -74,7 +74,7 @@ def initialize(context):
             my_rebalance_min1,
             date_rules.every_day(),
             time_rules.market_open(
-                minutes=minutez))
+                minutes=minutezz))
     # Prevent excessive logging of canceled orders at market close.
     schedule_function(
         cancel_open_orders,
